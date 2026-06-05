@@ -1,7 +1,6 @@
 import os
 import json
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 
 _DIR = os.path.dirname(os.path.abspath(__file__))
 GOOGLE_KEY_FILE    = os.path.join(_DIR, "google_key.json")
@@ -49,23 +48,17 @@ def _local_save_shared(data: dict):
 
 # ── Google Sheets 클라이언트 ──────────────────────────────────────────────────
 def _get_gc():
-    scope = ["https://spreadsheets.google.com/feeds",
-             "https://www.googleapis.com/auth/drive"]
     # 1순위: Streamlit Secrets (클라우드 배포)
     try:
         import streamlit as st
         if "gcp_service_account" in st.secrets:
-            creds = ServiceAccountCredentials.from_json_keyfile_dict(
-                dict(st.secrets["gcp_service_account"]), scope
-            )
-            return gspread.authorize(creds)
+            return gspread.service_account_from_dict(dict(st.secrets["gcp_service_account"]))
     except Exception:
         pass
     # 2순위: 로컬 google_key.json 파일
     try:
         if os.path.exists(GOOGLE_KEY_FILE):
-            creds = ServiceAccountCredentials.from_json_keyfile_name(GOOGLE_KEY_FILE, scope)
-            return gspread.authorize(creds)
+            return gspread.service_account(filename=GOOGLE_KEY_FILE)
     except Exception as e:
         print(f"Google 인증 에러: {e}")
     return None

@@ -1,4 +1,2 @@
 streamlit>=1.32.0
-
-gspread
-oauth2client
+gspread>=6.0.0

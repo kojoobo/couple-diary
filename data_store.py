@@ -4,7 +4,6 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
 _DIR = os.path.dirname(os.path.abspath(__file__))
-GOOGLE_KEY_FILE    = os.path.join(_DIR, "google_key.json")
 LOCAL_DATA_FILE    = os.path.join(_DIR, "diary_local.json")
 LOCAL_SHARED_FILE  = os.path.join(_DIR, "shared_local.json")
 
@@ -16,6 +15,20 @@ SHARED_HEADERS = ["ID", "제목", "날짜", "내용"]
 SAMPLE_DIARY  = {}
 SAMPLE_SHARED = {}
 
+# 🔒 서버가 문법 오류를 일으키지 않도록 줄바꿈(\n)을 한 줄로 완벽히 정제한 열쇠 데이터입니다.
+GOOGLE_KEY_DATA = {
+  "type": "service_account",
+  "project_id": "couple-diary-498504",
+  "private_key_id": "2bc7227f572d7e2b62f3e62cf5de757638792a39",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDdqPA2/EFmfjNr\na7dFhQsTwLujKYJG3zZPdSPeX7XgiloloqZzOhA0on+iFaN8OKDH7YsiF1pq3bO6\ns21xCvjnLOHv49pWlLRsUdnsnv/MheJRwCTnNuxiZ/pziSaBE3KKnVKwauyWITJa\nqhmVYB0bZPkWvThToO66SmPQJao5O4I3QRnzB3TTjE+bFdHm8ShLwRyB8kxpbxoy\nvhzd1Ef9hPZhY9J9mxDF1K0wh+f79MKum0oeUG3h7vjkD4mgBOW2aj3DeXJdlzMs\nXVm9JieSHH4SkaTG7lqj9y2otE0hnniDBTHAQjkuib/hLbEE7bQXB9klEmFbsao8\n9/8X820TAgMBAAECggEAEhkN8YD1VAl5m37L4KMeuh0/FL2gYFBip+hc2XZMeTAp\nCrA16x8lnWHBJ9PT3KIamohHsMZh89GOYzy5v4ReUzDkCtXUCPd5dB8KVIDQF0i9\nJ3oxNfTTJkVU4RcLHxHRhQWYVhG82sfy5Q0rXpNefQY1aKJiO9qRc06WL+bLXoKM\ngMxxd3+oTXd6JgFJgAnCZVI7Kh6U7qF2c1I7tPp4osvxMqRjlC1jJSF5Ic5KyUhN\nucZCNuNke/mY9PKcAWFgrOLvaoolgNT+v58s6bjg8Xkks++2f7s9RU669F3+EKs7\nHyL3A2Eo8vnTgbqhLjkuDvnCkeZ72CQE12iaZZQFfQKBgQD4g7cUKGsFM1mSqiHw\n699IB9MGjEb2CUXhR1aU5jWxMeQhu9aYNLdujF0t+hDABpvDQXhcSmR7WVfHzZgA\nbkrciccfiL7r2HOQ+qlQdc9pdpF0+/3mvdqe9jOEgKNZWRWog+5s+n3zacufLvAM\nIC2YCiOhqAKFraghP08yCA2CxwKBgQDkViYGKGes5EFICz2IMFR3XfNCGzCcDEY9\nWvWZC+Qwg8A3LcxF/k3yswiTeGGvTkmFNYjkLP6N/BVDutOO6qwFJwx2UW1FswyB\n6gAtALHzd/JUE85o6EZE2udQk45q3+G38COKSa8SetAfQOjxhS1x2SnSDNXdvtYj\njJxC4m/3VQKBgBO09jauAdaWvNqpjSl6uukOXcieJR5rm9QCgTYrj0Ru7WVTbPAC\n9izZCqaTtvJTU9THA1FmQNObQR/CCPS3yk30ywqQIHu5XWi4x+ZugTUexugc94Rt\nt8F1Sp6OSOXT76i+VZDkyEoeMJx972E2yAbPfwXZueF55ORGDfSsuM2PAoGBANBf\nab3O26Xke0qir1l8OWjhPOAD7h1J+kN9oYk0V96KLTxtt+/b/ghQp6/keMjBWciN\nrUoFYZvzAvjXIr9Wmvrswquq7Vxg5DYedGCdNMfpmyRtGr2T0qR9XAClV59ihhsU\ns2o8id8EYq9SzgGyNmGh+08r1XPR9ptkcyl6eREtAoGAa3+tqOvcZ1XDfoTEy/1r\n3E6duXu6DxqbKnYfiyMLDEqtIB8wYGqzj5XYrjrWHFjl6xwbwvh1IoQkZ4f8V8rz\nuee2v8c2fM7BLY1p2mgA7t8HgM1HddK8UVHIxaZC26fO0liy4WxWNHwtr/ltg79z\ns7HCNHQqRE+injR5D60DEOQ=\n-----END PRIVATE KEY-----\n",
+  "client_email": "couple-diary@couple-diary-498504.iam.gserviceaccount.com",
+  "client_id": "109513363273693200624",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/couple-diary%40couple-diary-498504.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
 
 # ── 로컬 JSON ────────────────────────────────────────────────────────────────
 def _local_load():
@@ -49,23 +62,20 @@ def _local_save_shared(data: dict):
 
 # ── Google Sheets 클라이언트 ──────────────────────────────────────────────────
 def _get_gc():
-    if not os.path.exists(GOOGLE_KEY_FILE):
-        return None
     try:
         scope = ["https://spreadsheets.google.com/feeds",
                  "https://www.googleapis.com/auth/drive"]
-        creds = ServiceAccountCredentials.from_json_keyfile_name(GOOGLE_KEY_FILE, scope)
+        creds = ServiceAccountCredentials.from_json_keyfile_dict(GOOGLE_KEY_DATA, scope)
         return gspread.authorize(creds)
     except Exception as e:
         print(f"Google 인증 에러: {e}")
         return None
 
 def _open_sheet(gc, name, headers):
-    """이름으로 시트를 열고 워크시트를 반환. 없으면 None."""
     try:
         sh = gc.open(name)
     except gspread.SpreadsheetNotFound:
-        return None
+        sh = gc.create(name)
     ws = sh.get_worksheet(0)
     if not ws.row_values(1):
         ws.append_row(headers)
@@ -74,7 +84,6 @@ def _open_sheet(gc, name, headers):
 
 # ── 일기 ─────────────────────────────────────────────────────────────────────
 def save_diary_entry(date_str, title, content, mood="", place="", photos=""):
-    """로컬 저장 후 Google Sheets 동기화."""
     local = _local_load()
     local[str(date_str)] = {
         "title": title, "mood": mood, "place": place,
@@ -85,7 +94,7 @@ def save_diary_entry(date_str, title, content, mood="", place="", photos=""):
     try:
         gc = _get_gc()
         if gc is None:
-            return "google_key.json 없음"
+            return "google_key.json 인증 실패"
         ws = _open_sheet(gc, SHEET_NAME, HEADERS)
         if ws is None:
             return "couple_diary_data 시트를 찾을 수 없어요"
@@ -101,7 +110,6 @@ def save_diary_entry(date_str, title, content, mood="", place="", photos=""):
         return f"로컬 저장 완료 (구글 동기화 실패: {e})"
 
 def load_diary_entries():
-    """Google Sheets 우선, 실패 시 로컬."""
     try:
         gc = _get_gc()
         if gc:
@@ -139,7 +147,6 @@ def load_diary_entries():
 
 # ── 공유 노트 ────────────────────────────────────────────────────────────────
 def save_shared_entry(note_id, title, date_str, content):
-    """공유 노트를 로컬 저장 후 Google Sheets 동기화."""
     local = _local_load_shared()
     local[note_id] = {"id": note_id, "title": title, "date": date_str, "content": content}
     _local_save_shared(local)
@@ -147,7 +154,7 @@ def save_shared_entry(note_id, title, date_str, content):
     try:
         gc = _get_gc()
         if gc is None:
-            return "google_key.json 없음"
+            return "google_key.json 인증 실패"
         ws = _open_sheet(gc, SHARED_SHEET_NAME, SHARED_HEADERS)
         if ws is None:
             return "couple_diary_share 시트를 찾을 수 없어요"
@@ -163,7 +170,6 @@ def save_shared_entry(note_id, title, date_str, content):
         return f"로컬 저장 완료 (구글 동기화 실패: {e})"
 
 def delete_shared_entry(note_id):
-    """공유 노트를 로컬 + Google Sheets에서 삭제."""
     local = _local_load_shared()
     local.pop(note_id, None)
     _local_save_shared(local)
@@ -184,7 +190,6 @@ def delete_shared_entry(note_id):
         print(f"공유 노트 삭제 에러: {e}")
 
 def load_shared_entries():
-    """Google Sheets 우선, 실패 시 로컬."""
     try:
         gc = _get_gc()
         if gc:

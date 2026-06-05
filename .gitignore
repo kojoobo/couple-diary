@@ -1,3 +1,6 @@
 google_key.json
+.streamlit/secrets.toml
 diary_local.json
 shared_local.json
+__pycache__/
+*.pyc

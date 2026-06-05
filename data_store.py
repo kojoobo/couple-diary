@@ -49,16 +49,26 @@ def _local_save_shared(data: dict):
 
 # ── Google Sheets 클라이언트 ──────────────────────────────────────────────────
 def _get_gc():
-    if not os.path.exists(GOOGLE_KEY_FILE):
-        return None
+    scope = ["https://spreadsheets.google.com/feeds",
+             "https://www.googleapis.com/auth/drive"]
+    # 1순위: Streamlit Secrets (클라우드 배포)
     try:
-        scope = ["https://spreadsheets.google.com/feeds",
-                 "https://www.googleapis.com/auth/drive"]
-        creds = ServiceAccountCredentials.from_json_keyfile_name(GOOGLE_KEY_FILE, scope)
-        return gspread.authorize(creds)
+        import streamlit as st
+        if "gcp_service_account" in st.secrets:
+            creds = ServiceAccountCredentials.from_json_keyfile_dict(
+                dict(st.secrets["gcp_service_account"]), scope
+            )
+            return gspread.authorize(creds)
+    except Exception:
+        pass
+    # 2순위: 로컬 google_key.json 파일
+    try:
+        if os.path.exists(GOOGLE_KEY_FILE):
+            creds = ServiceAccountCredentials.from_json_keyfile_name(GOOGLE_KEY_FILE, scope)
+            return gspread.authorize(creds)
     except Exception as e:
         print(f"Google 인증 에러: {e}")
-        return None
+    return None
 
 def _open_sheet(gc, name, headers):
     """이름으로 시트를 열고 워크시트를 반환. 없으면 None."""
